@@ -85,8 +85,6 @@
                       CanContentScroll="True"
                       HorizontalScrollBarVisibility="Hidden"
                       VerticalScrollBarVisibility="Disabled">
-                        <!--MouseWheel ="ScrollViewer_MouseWheel"-->
-
 
             <StackPanel x:Name="stack" 
                         Orientation="Horizontal"

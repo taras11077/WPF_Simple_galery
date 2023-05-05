@@ -40,8 +40,6 @@ namespace Simple_galery
         public static readonly DependencyProperty ImagePreviewProperty =
             DependencyProperty.Register("ImagePreview", typeof(ImageSource), typeof(MainWindow), new PropertyMetadata(null));
 
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -86,7 +84,7 @@ namespace Simple_galery
         }
         private void UpdateStack()
         {
-            for (int i = lastLoadedIndex; i < lastLoadedIndex + extraLoad && i < list.Count; i++)
+            for (int i = lastLoadedIndex; i < lastLoadedIndex + extraLoad && i < list.Count; i++) // загрузка заданного количества изображений с фиксацией индекса последнешо загруженного
             {
                     System.Windows.Controls.Image image = new System.Windows.Controls.Image();
                     image.Source = new BitmapImage(new Uri(list[i]));
@@ -104,7 +102,7 @@ namespace Simple_galery
                     border.MouseDown += Border_MouseDown;
                     border.MouseEnter += Border_MouseEnter;
                     border.MouseLeave += Border_MouseLeave;
-                    //border.MouseWheel += ScrollViewer_MouseWheel;
+                    border.MouseWheel += ScrollViewer_MouseWheel;
 
                     stack.Children.Add(border);
             };
@@ -125,7 +123,7 @@ namespace Simple_galery
                 if (border.Child is Image image)
                     ImagePreview = image.Source;
 
-                if ((bool)rbtnPreviewImage.IsChecked) // установка SelectImage фоном главного изображения
+                if ((bool)rbtnPreviewImage.IsChecked!) // установка SelectImage фоном главного изображения
                     panelPreview.Background = new ImageBrush(ImagePreview);
 
                 if (stack.Children.IndexOf(activeBorder) == lastLoadedIndex-1) // запуск подгрузки, если SelectImage достигло последнего загруженного фото
