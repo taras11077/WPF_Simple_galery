@@ -46,43 +46,32 @@
         
         <!--Menu-->
         <DockPanel Grid.Row="0">
-            <Menu DockPanel.Dock="Top" Background="DarkSlateGray" Foreground="LightGray">
+            <Menu DockPanel.Dock="Top" Background="LightSlateGray" Foreground="Black">
                 <MenuItem Header="Menu">
                     <MenuItem x:Name="menuOpen" Header="Open Directory" Click="menuOpen_Click"/>
                     <MenuItem x:Name="menuFullScreen" Header="Full Screen" Click="menuFullScreen_Click"/>
                     <MenuItem x:Name="menuExit" Header="Exit" Click="menuExit_Click"/>
+                    <MenuItem x:Name="menuBackgroundView" Header="Background View">
+                        <RadioButton x:Name="rbtnNone" GroupName="BackGround" Content="none" IsChecked="True" Checked="rbtnNone_Checked" />
+                        <RadioButton x:Name="rbtnPreviewImage" GroupName="BackGround" Content="preview image" Checked="rbtnPreviewImage_Checked" />
+                    </MenuItem>
                 </MenuItem>
             </Menu>
         </DockPanel>
 
+        <!--Preview panel-->
+        <DockPanel Grid.Row="1" x:Name="panelPreview" Opacity="0.7">
+            <DockPanel.Effect>
+                <BlurEffect Radius="10"></BlurEffect>
+            </DockPanel.Effect>
+        </DockPanel>
+
         <!--Preview image-->
-        
         <Image Grid.Row="1" x:Name="imgPreview" HorizontalAlignment="Center"  
+               Source="{Binding Path=ImagePreview}"
                AllowDrop="True"
                PreviewDragEnter="MainGrid_PreviewDragEnter"
                PreviewDrop="MainGrid_PreviewDrop">
-
-            <Image.Style>
-                <Style TargetType="{x:Type Image}">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect
-                                             BlurRadius="5"
-                                             Color="White"
-                                             Opacity="100"
-                                             RenderingBias="Performance"
-                                             ShadowDepth="30"
-                                             Direction="180"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Image.Style>
-
-
         </Image>
 
         <!--Splitter-->
@@ -95,20 +84,20 @@
                       
                       CanContentScroll="True"
                       HorizontalScrollBarVisibility="Hidden"
-                      VerticalScrollBarVisibility="Disabled"
-                      MouseWheel ="scrollViewer_MouseWheel">
+                      VerticalScrollBarVisibility="Disabled">
+                        <!--MouseWheel ="ScrollViewer_MouseWheel"-->
 
 
-        <StackPanel x:Name="stack" 
+            <StackPanel x:Name="stack" 
                         Orientation="Horizontal"
                     
                         AllowDrop="True"
                         PreviewDragEnter="MainGrid_PreviewDragEnter"
                         PreviewDragOver="MainGrid_PreviewDragEnter"
-                        PreviewDrop="MainGrid_PreviewDrop"
-                        MouseWheel ="scrollViewer_MouseWheel">
+                        PreviewDrop="MainGrid_PreviewDrop">
 
-        </StackPanel>
+
+            </StackPanel>
            
         </ScrollViewer>
 
