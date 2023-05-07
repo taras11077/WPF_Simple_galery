@@ -37,6 +37,12 @@
           PreviewDragEnter="MainGrid_PreviewDragEnter"
           PreviewDrop="MainGrid_PreviewDrop">
 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="0.15*"/>
+           
+        </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -45,25 +51,60 @@
         </Grid.RowDefinitions>
         
         <!--Menu-->
-        <DockPanel Grid.Row="0">
+        <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
             <Menu DockPanel.Dock="Top" Background="LightSlateGray" Foreground="Black">
                 <MenuItem Header="Menu">
                     <MenuItem x:Name="menuOpen" Header="Open Directory" Click="menuOpen_Click"/>
                     <MenuItem x:Name="menuFullScreen" Header="Full Screen" Click="menuFullScreen_Click"/>
                     <MenuItem x:Name="menuExit" Header="Exit" Click="menuExit_Click"/>
-                    <MenuItem x:Name="menuBackgroundView" Header="Background View">
-                        <RadioButton x:Name="rbtnNone" GroupName="BackGround" Content="none" IsChecked="True" Checked="rbtnNone_Checked" />
-                        <RadioButton x:Name="rbtnPreviewImage" GroupName="BackGround" Content="preview image" Checked="rbtnPreviewImage_Checked" />
-                    </MenuItem>
+                </MenuItem>
+                <MenuItem x:Name="menuBackgroundView" Header="Background View">
+                    <RadioButton x:Name="rbtnNone" GroupName="BackGround" Content="none" IsChecked="True" Checked="rbtnNone_Checked" />
+                    <RadioButton x:Name="rbtnPreviewImage" GroupName="BackGround" Content="preview image" Checked="rbtnPreviewImage_Checked" />
                 </MenuItem>
             </Menu>
         </DockPanel>
 
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Background="Transparent" StackPanel.ZIndex="1">
+
+            <Button x:Name="btnRotate" 
+                    HorizontalAlignment="Center"
+                    Height="40" Width="40"
+                    Margin="20" 
+                    Background="Transparent" 
+                    Foreground="Gray" 
+                    FontSize="24"
+                    Content="↺"
+                    VerticalContentAlignment="Center" Click="btnRotate_Click"
+                    >
+
+            </Button>
+
+            <Button x:Name="btnSepia" 
+                    HorizontalAlignment="Center"  
+                    Height="40" Width="40" 
+                    Margin="20" 
+                    Background="Transparent" 
+                    Foreground="Gray"
+                    FontSize="24" Click="btnSepia_Click">◐
+            </Button>
+
+            <Button x:Name="btnDelete" 
+                    HorizontalAlignment="Center"  
+                    Margin="20" 
+                    Height="40" Width="40" 
+                    Background="Transparent" 
+                    Foreground="Gray" 
+                    FontSize="18" Click="btnDelete_Click">🗑
+            </Button>
+        </StackPanel>
+        
         <!--Preview panel-->
-        <DockPanel Grid.Row="1" x:Name="panelPreview" Opacity="0.7">
+        <DockPanel Grid.Row="1" Grid.ColumnSpan="2" x:Name="panelPreview" Opacity="0.7">
             <DockPanel.Effect>
                 <BlurEffect Radius="10"></BlurEffect>
             </DockPanel.Effect>
+            
         </DockPanel>
 
         <!--Preview image-->
@@ -75,10 +116,11 @@
         </Image>
 
         <!--Splitter-->
-        <GridSplitter Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
+        <GridSplitter Grid.ColumnSpan="2" Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
 
         <!--Stack of images-->
         <ScrollViewer Grid.Row="3"
+                      Grid.ColumnSpan="2"
                       x:Name="scrollViewer"
                       Background="DarkSlateGray"
                       
