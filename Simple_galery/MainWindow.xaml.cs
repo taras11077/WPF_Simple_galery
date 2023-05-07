@@ -24,6 +24,7 @@ using static System.Net.Mime.MediaTypeNames;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Image = System.Windows.Controls.Image;
+using Point = System.Windows.Point;
 
 namespace Simple_galery
 {
@@ -231,57 +232,50 @@ namespace Simple_galery
                 panelPreview.Background = null;
         }
 
+        // поворот изображения
         private void btnRotate_Click(object sender, RoutedEventArgs e)
         {
-            if (ImagePreview != null)
-            {
-                //Image image = new Image();
-                //image.Source = ImagePreview;
+            if (ImagePreview == null)
+                return;
+       
+            TransformedBitmap tb = new TransformedBitmap();
 
-                //RotateTransform rotate = new RotateTransform(90);
+            tb.BeginInit();
 
-                //image.RenderTransform = rotate;
-                //ImagePreview = image.Source;
-                //UpdateStack();
+            tb.Source = ImagePreview as BitmapSource;
+            RotateTransform transform = new RotateTransform(90);
+            tb.Transform = transform;
 
-                Image image = new Image();
-                image.Source = ImagePreview;
+            tb.EndInit();
 
-                var RotateTransform = image.RenderTransform as RotateTransform;
-                var transform = new RotateTransform(1 + (RotateTransform?.Angle ?? 90));
-                image.RenderTransform = transform;
-                ImagePreview = image.Source;
-
-            }
+            ImagePreview = tb;
         }
 
+        // преобразование в черно-белое изображение
         private void btnSepia_Click(object sender, RoutedEventArgs e)
         {
-            if (ImagePreview != null)
-            {
-                FormatConvertedBitmap newFormatedBitmapSource = new FormatConvertedBitmap();
+            if (ImagePreview == null)
+                return;
+            
+            FormatConvertedBitmap newFormat = new FormatConvertedBitmap();
 
-                newFormatedBitmapSource.BeginInit();
-                newFormatedBitmapSource.Source = ImagePreview as BitmapSource;
-                newFormatedBitmapSource.DestinationFormat = PixelFormats.Gray32Float;
-                newFormatedBitmapSource.EndInit();
+            newFormat.BeginInit();
+            newFormat.Source = ImagePreview as BitmapSource;
+            newFormat.DestinationFormat = PixelFormats.Gray32Float;
+            newFormat.EndInit();
 
-                Image image = new Image();
-                image.Width = 200;
-                image.Source = newFormatedBitmapSource;
-
-                ImagePreview = image.Source;
-            }
+            ImagePreview = newFormat; 
         }
-
+        // удаление изображения из списка
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if (activeBorder != null)
-            {
-                ImagePreview = null;
-                list.RemoveAt(stack.Children.IndexOf(activeBorder));
-                stack.Children.Remove(activeBorder);
-            }
+            if (ImagePreview == null)
+                return;
+            
+            ImagePreview = null;
+            list.RemoveAt(stack.Children.IndexOf(activeBorder));
+            stack.Children.Remove(activeBorder);
+            lastLoadedIndex--;
         }
     }
 }
