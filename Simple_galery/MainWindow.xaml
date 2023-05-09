@@ -5,34 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Simple_galery"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
-        Background="Gray" WindowStartupLocation="CenterScreen">
-    <Window.Resources>
-        <Image x:Key="scrollImage">
-            <Image.Style>
-                <Style TargetType="{x:Type Image}">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect
-                                             BlurRadius="5"
-                                             Color="Black"
-                                             Direction="315"
-                                             Opacity="100"
-                                             RenderingBias="Performance"
-                                             ShadowDepth="5"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </Image.Style>
-        </Image>
-    </Window.Resources>
+        Title="MainWindow" Height="500" Width="800"
+        WindowStartupLocation="CenterScreen">
+   
     
     <Grid x:Name="MainGrid"
-          Background="Black"
+          Style="{DynamicResource GridStyle}"
           AllowDrop="True"
           PreviewDragEnter="MainGrid_PreviewDragEnter"
           PreviewDrop="MainGrid_PreviewDrop">
@@ -52,13 +30,19 @@
         
         <!--Menu-->
         <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
-            <Menu DockPanel.Dock="Top" Background="LightSlateGray" Foreground="Black">
-                <MenuItem Header="Menu">
-                    <MenuItem x:Name="menuOpen" Header="Open Directory" Click="menuOpen_Click"/>
-                    <MenuItem x:Name="menuFullScreen" Header="Full Screen" Click="menuFullScreen_Click"/>
+            <Menu DockPanel.Dock="Top" Style="{DynamicResource MenuStyle}">
+                <MenuItem Header="Menu" Style="{DynamicResource ParentMenuItem}">
+                    <MenuItem x:Name="menuOpen" Header="Open Directory"  Click="menuOpen_Click"/>
+                    <MenuItem x:Name="menuFullScreen" Header="Full Screen"  Click="menuFullScreen_Click"/>
                     <MenuItem x:Name="menuExit" Header="Exit" Click="menuExit_Click"/>
                 </MenuItem>
-                <MenuItem x:Name="menuBackgroundView" Header="Background View">
+
+                <MenuItem Header="Themes" Style="{DynamicResource ParentMenuItem}">
+                    <MenuItem x:Name="menuLightTheme" Header="Light" Click="menuLightTheme_Click"/>
+                    <MenuItem x:Name="menuDarkTheme" Header="Dark" Click="menuDarkTheme_Click"/>
+                </MenuItem>
+
+                <MenuItem x:Name="menuBackgroundView" Header="Image Background" Style="{DynamicResource ParentMenuItem}">
                     <RadioButton x:Name="rbtnNone" GroupName="BackGround" Content="none" IsChecked="True" Checked="rbtnNone_Checked" />
                     <RadioButton x:Name="rbtnPreviewImage" GroupName="BackGround" Content="preview image" Checked="rbtnPreviewImage_Checked" />
                 </MenuItem>
@@ -67,48 +51,56 @@
 
         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical" Background="Transparent" StackPanel.ZIndex="1">
 
-            <Button x:Name="btnRotate" 
-                    HorizontalAlignment="Center"
-                    Height="40" Width="40"
-                    Margin="20" 
-                    Background="Transparent" 
-                    Foreground="Gray" 
+            <Button x:Name="btnRotate"  
+                    Style="{DynamicResource ButtonStyle}"
                     FontSize="24"
                     Content="↺"
-                    VerticalContentAlignment="Center" Click="btnRotate_Click"
-                    >
+                    Click="btnRotate_Click">
+            </Button>
 
+            <Button x:Name="btnMirror"  
+                    Style="{DynamicResource ButtonStyle}"
+                    FontSize="24"
+                    Content="↔"
+                    Click="btnMirror_Click">
             </Button>
 
             <Button x:Name="btnSepia" 
-                    HorizontalAlignment="Center"  
-                    Height="40" Width="40" 
-                    Margin="20" 
-                    Background="Transparent" 
-                    Foreground="Gray"
-                    FontSize="24" Click="btnSepia_Click">◐
+                    Style="{DynamicResource ButtonStyle}"
+                    FontSize="24" 
+                    Content="◐"
+                    Click="btnSepia_Click"
+                    >
+            </Button>
+
+            <Button x:Name="btnSlideShow" 
+                    Style="{DynamicResource ButtonStyle}"
+                    FontSize="18" 
+                    Content="🎥"
+                    Click="btnSlideShow_Click"
+                    >
             </Button>
 
             <Button x:Name="btnDelete" 
-                    HorizontalAlignment="Center"  
-                    Margin="20" 
-                    Height="40" Width="40" 
-                    Background="Transparent" 
-                    Foreground="Gray" 
-                    FontSize="18" Click="btnDelete_Click">🗑
+                    Style="{DynamicResource ButtonStyle}"
+                    FontSize="18"
+                    Content ="🗑"
+                    Click="btnDelete_Click">
             </Button>
         </StackPanel>
         
         <!--Preview panel-->
-        <DockPanel Grid.Row="1" Grid.ColumnSpan="2" x:Name="panelPreview" Opacity="0.7">
+        <DockPanel x:Name="panelPreview" Grid.Row="1" Grid.ColumnSpan="2" Opacity="0.7">
             <DockPanel.Effect>
                 <BlurEffect Radius="10"></BlurEffect>
             </DockPanel.Effect>
-            
         </DockPanel>
 
         <!--Preview image-->
-        <Image Grid.Row="1" x:Name="imgPreview" HorizontalAlignment="Center"  
+        <Image x:Name="imgPreview" 
+               Grid.Row="1" Grid.Column="0" 
+               Grid.ColumnSpan="2"   
+               HorizontalAlignment="Center"  
                Source="{Binding Path=ImagePreview}"
                AllowDrop="True"
                PreviewDragEnter="MainGrid_PreviewDragEnter"
@@ -116,30 +108,25 @@
         </Image>
 
         <!--Splitter-->
-        <GridSplitter Grid.ColumnSpan="2" Grid.Row="2" Height="5" HorizontalAlignment="Stretch" Background="Gray"/>
+        <GridSplitter Grid.ColumnSpan="2" Grid.Row="2"
+                      Style="{DynamicResource SplitterStyle}"
+                      Height="5" HorizontalAlignment="Stretch"/>
 
         <!--Stack of images-->
-        <ScrollViewer Grid.Row="3"
-                      Grid.ColumnSpan="2"
-                      x:Name="scrollViewer"
-                      Background="DarkSlateGray"
-                      
+        <ScrollViewer x:Name="scrollViewer" Grid.Row="3" Grid.ColumnSpan="2"
+                      Style="{DynamicResource ScrollViewerStyle}"
                       CanContentScroll="True"
                       HorizontalScrollBarVisibility="Hidden"
                       VerticalScrollBarVisibility="Disabled">
 
             <StackPanel x:Name="stack" 
                         Orientation="Horizontal"
-                    
                         AllowDrop="True"
                         PreviewDragEnter="MainGrid_PreviewDragEnter"
                         PreviewDragOver="MainGrid_PreviewDragEnter"
                         PreviewDrop="MainGrid_PreviewDrop">
 
-
             </StackPanel>
-           
         </ScrollViewer>
-
     </Grid>
 </Window>

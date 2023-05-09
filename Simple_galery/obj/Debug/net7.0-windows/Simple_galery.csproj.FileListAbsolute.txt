@@ -22,3 +22,5 @@ D:\step\repos\HW\WPF\Simple_galery\Simple_galery\obj\Debug\net7.0-windows\ref\Si
 D:\step\repos\HW\WPF\Simple_galery\Simple_galery\obj\Debug\net7.0-windows\FullScreenWindow.g.cs
 D:\step\repos\HW\WPF\Simple_galery\Simple_galery\obj\Debug\net7.0-windows\FullScreenWindow.baml
 D:\step\repos\HW\WPF\Simple_galery\Simple_galery\obj\Debug\net7.0-windows\Simple_galery.csproj.CopyComplete
+D:\step\repos\HW\WPF\Simple_galery\Simple_galery\obj\Debug\net7.0-windows\DarkTheme.baml
+D:\step\repos\HW\WPF\Simple_galery\Simple_galery\obj\Debug\net7.0-windows\LightTheme.baml

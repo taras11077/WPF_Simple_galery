@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 D:\step\repos\HW\WPF\Simple_galery\Simple_galery\App.xaml
-2464464919
+4-942988988
 
 4896124915
 208-1128879328
-FullScreenWindow.xaml;MainWindow.xaml;
+DarkTheme.xaml;FullScreenWindow.xaml;LightTheme.xaml;MainWindow.xaml;
 
 False
 

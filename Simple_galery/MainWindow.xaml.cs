@@ -1,30 +1,17 @@
 ﻿using FileProcessor;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Net.Mime.MediaTypeNames;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Image = System.Windows.Controls.Image;
-using Point = System.Windows.Point;
 
 namespace Simple_galery
 {
@@ -39,6 +26,7 @@ namespace Simple_galery
         private Finder finder;
         private int lastLoadedIndex = 0;
         private int extraLoad = 3;
+        bool slideShow = false;
        
         public ImageSource? ImagePreview
         {
@@ -58,6 +46,7 @@ namespace Simple_galery
             DataContext = this;
 
             ConfigWindow();
+            SetThemes("DarkTheme.xaml");
 
             string[] filePatterns =
             {
@@ -134,7 +123,7 @@ namespace Simple_galery
                 if ((bool)rbtnPreviewImage.IsChecked!) // установка SelectImage фоном главного изображения
                     panelPreview.Background = new ImageBrush(ImagePreview);
 
-                if (stack.Children.IndexOf(activeBorder) == lastLoadedIndex-1) // запуск подгрузки, если SelectImage достигло последнего загруженного фото
+                if (stack.Children.IndexOf(activeBorder) == lastLoadedIndex-1 && !slideShow) // запуск подгрузки, если SelectImage достигло последнего загруженного фото
                     UpdateStack();
             }
         }
@@ -193,7 +182,7 @@ namespace Simple_galery
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
         }
 
@@ -232,12 +221,12 @@ namespace Simple_galery
                 panelPreview.Background = null;
         }
 
-        // поворот изображения
+        // поворот изображения 
         private void btnRotate_Click(object sender, RoutedEventArgs e)
         {
             if (ImagePreview == null)
                 return;
-       
+
             TransformedBitmap tb = new TransformedBitmap();
 
             tb.BeginInit();
@@ -246,6 +235,23 @@ namespace Simple_galery
             RotateTransform transform = new RotateTransform(90);
             tb.Transform = transform;
 
+            tb.EndInit();
+
+            ImagePreview = tb;
+        }
+
+        // зеркальное отображение
+        private void btnMirror_Click(object sender, RoutedEventArgs e)
+        {
+            if (ImagePreview == null)
+                return;
+
+            TransformedBitmap tb = new TransformedBitmap();
+
+            tb.BeginInit();
+            tb.Source = ImagePreview as BitmapSource;
+            ScaleTransform transform = new ScaleTransform(-1, 1, 0.5, 0.5);
+            tb.Transform = transform;
             tb.EndInit();
 
             ImagePreview = tb;
@@ -277,6 +283,45 @@ namespace Simple_galery
             stack.Children.Remove(activeBorder);
             lastLoadedIndex--;
         }
+
+        // установка теми
+        private void menuLightTheme_Click(object sender, RoutedEventArgs e)
+        {
+            SetThemes("LightTheme.xaml");
+        }
+
+        private void menuDarkTheme_Click(object sender, RoutedEventArgs e)
+        {
+            SetThemes("DarkTheme.xaml");
+        }
+
+        private void SetThemes(string dictionary)
+        {
+            Uri uri = new Uri(dictionary, UriKind.Relative);
+
+            ResourceDictionary? dic = Application.LoadComponent(uri) as ResourceDictionary;
+            if (dic != null)
+            {
+                Resources.Clear();
+                Resources.MergedDictionaries.Add(dic);
+            }
+        }
+
+        // слайд-шоу
+        private void btnSlideShow_Click(object sender, RoutedEventArgs e)
+        {
+            slideShow = true;
+
+            foreach (var item in stack.Children)
+            {
+                SelectImage(item);
+                Thread.Sleep(1000);
+            }
+
+            slideShow = false;
+        }
+
+        
     }
 }
 
