@@ -325,10 +325,7 @@ namespace Simple_galery
             panelPreview.Background = null;
 
         // анимация
-        //ObjectAnimationUsingKeyFrames objectAnimation = new()
-        //{
-        //    Duration = new Duration(TimeSpan.FromSeconds(stack.Children.Count)),
-        //};
+       
             objectAnimation.Duration = new Duration(TimeSpan.FromSeconds(stack.Children.Count));
 
             objectAnimation.Completed += ObjectAnimation_Completed!;

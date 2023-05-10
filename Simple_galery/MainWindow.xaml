@@ -75,6 +75,7 @@
 
             <Button x:Name="btnSlideShow" 
                     Style="{DynamicResource ButtonStyle}"
+                    Height="35"
                     Margin="10,7,10,0"
                     FontSize="18" 
                     Content="🎥"
@@ -83,9 +84,10 @@
 
             <Button x:Name="btnStop" 
                     Style="{DynamicResource ButtonStyle}"
+                    Height="35"
                     Margin="10,0,10,7"
-                    FontSize="14"
-                    Content ="STOP"
+                    FontSize="18"
+                    Content ="❌"
                     Click="btnStop_Click">
             </Button>
 
@@ -135,7 +137,6 @@
                         PreviewDragEnter="MainGrid_PreviewDragEnter"
                         PreviewDragOver="MainGrid_PreviewDragEnter"
                         PreviewDrop="MainGrid_PreviewDrop">
-
             </StackPanel>
         </ScrollViewer>
     </Grid>
