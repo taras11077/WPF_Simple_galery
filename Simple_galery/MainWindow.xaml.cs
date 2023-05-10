@@ -32,6 +32,7 @@ namespace Simple_galery
         private Finder finder;
         private int lastLoadedIndex = 0;
         private int extraLoad = 5;
+        private string mainWindowTheme = string.Empty;
 
         private ObjectAnimationUsingKeyFrames objectAnimation = new();
             
@@ -147,7 +148,7 @@ namespace Simple_galery
             if (activeBorder == null)
                 return;
 
-            FullScreenWindow fsWin = new FullScreenWindow(list, stack.Children.IndexOf(activeBorder));
+            FullScreenWindow fsWin = new FullScreenWindow(list, stack.Children.IndexOf(activeBorder), mainWindowTheme);
             fsWin.ShowDialog();
 
             SelectImage(stack.Children[fsWin.Id]);
@@ -197,9 +198,9 @@ namespace Simple_galery
         // прокрутка предпросмотра колесом мыши
         private void ScrollViewer_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta < 0)
+            if (e.Delta > 0)
                 scrollViewer.LineRight();
-            else if (e.Delta > 0)
+            else if (e.Delta < 0)
                 scrollViewer.LineLeft();
 
             e.Handled = false;
@@ -302,7 +303,7 @@ namespace Simple_galery
 
         private void menuDarkTheme_Click(object sender, RoutedEventArgs e)
         {
-            SetThemes("DarkTheme.xaml");
+            SetThemes("DarkTheme.xaml"); 
         }
 
         private void SetThemes(string dictionary)
@@ -315,6 +316,8 @@ namespace Simple_galery
                 Resources.Clear();
                 Resources.MergedDictionaries.Add(dic);
             }
+
+            mainWindowTheme = dictionary;
         }
 
         // слайд-шоу

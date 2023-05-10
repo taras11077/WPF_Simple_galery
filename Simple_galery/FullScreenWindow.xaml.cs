@@ -21,7 +21,7 @@ namespace Simple_galery
     {
         private List<string> list = new List<string>();
         public int Id { get; set; }
-        public FullScreenWindow(List<string> list, int id)
+        public FullScreenWindow(List<string> list, int id, string mainWindowTheme)
         {
             InitializeComponent();
 
@@ -29,6 +29,7 @@ namespace Simple_galery
             Id = id;
 
             ConfigWindow();
+            SetThemes(mainWindowTheme);
 
             imgMain.Source = new BitmapImage(new Uri(list[id]));
         }
@@ -43,6 +44,7 @@ namespace Simple_galery
             Mouse.OverrideCursor = Cursors.None;
         }
 
+        // прокрутка клавиатурой
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
@@ -61,6 +63,35 @@ namespace Simple_galery
                         return;
                     imgMain.Source = new BitmapImage(new Uri(list[--Id]));
                     break;
+            }
+        }
+        // прокрутка колесом мыши
+        private void imgMain_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                if (Id == list.Count - 1)
+                    return;
+                imgMain.Source = new BitmapImage(new Uri(list[++Id]));
+            }
+            else if (e.Delta < 0)
+            {
+                if (Id == 0)
+                    return;
+                imgMain.Source = new BitmapImage(new Uri(list[--Id]));
+            }
+        }
+
+
+        private void SetThemes(string dictionary)
+        {
+            Uri uri = new Uri(dictionary, UriKind.Relative);
+
+            ResourceDictionary? dic = Application.LoadComponent(uri) as ResourceDictionary;
+            if (dic != null)
+            {
+                Resources.Clear();
+                Resources.MergedDictionaries.Add(dic);
             }
         }
     }

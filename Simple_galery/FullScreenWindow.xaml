@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:Simple_galery"
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800"
-        KeyDown="Window_KeyDown"
-        >
+        KeyDown="Window_KeyDown">
+    
     <Grid Style="{DynamicResource GridStyle}">
-        <Image x:Name="imgMain"/>
+        <Image x:Name="imgMain" MouseWheel="imgMain_MouseWheel"/>
     </Grid>
 </Window>
