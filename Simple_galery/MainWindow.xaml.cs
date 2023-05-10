@@ -1,14 +1,20 @@
 ﻿using FileProcessor;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Image = System.Windows.Controls.Image;
@@ -25,9 +31,10 @@ namespace Simple_galery
         private List<string> list = new List<string>();
         private Finder finder;
         private int lastLoadedIndex = 0;
-        private int extraLoad = 3;
-        bool slideShow = false;
-       
+        private int extraLoad = 5;
+
+        private ObjectAnimationUsingKeyFrames objectAnimation = new();
+            
         public ImageSource? ImagePreview
         {
             get { return (ImageSource)GetValue(ImagePreviewProperty); }
@@ -109,13 +116,14 @@ namespace Simple_galery
         private void SelectImage(object sender)
         {
             Border? border = sender as Border;
-            if (border != null)
-            {
+            if (border == null)
+                return;
+                        
                 if (activeBorder != null)
                     activeBorder.BorderBrush = new SolidColorBrush(Colors.Transparent);
 
                 activeBorder = border;
-                border.BorderBrush = new SolidColorBrush(Colors.ForestGreen);
+                border.BorderBrush = new SolidColorBrush(Colors.IndianRed);
 
                 if (border.Child is Image image)
                     ImagePreview = image.Source;
@@ -123,15 +131,15 @@ namespace Simple_galery
                 if ((bool)rbtnPreviewImage.IsChecked!) // установка SelectImage фоном главного изображения
                     panelPreview.Background = new ImageBrush(ImagePreview);
 
-                if (stack.Children.IndexOf(activeBorder) == lastLoadedIndex-1 && !slideShow) // запуск подгрузки, если SelectImage достигло последнего загруженного фото
-                    UpdateStack();
-            }
+                if (stack.Children.IndexOf(activeBorder) == lastLoadedIndex-1) // запуск подгрузки, если SelectImage достигло последнего загруженного фото
+                    UpdateStack(); 
         }
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 SelectImage(sender);
+
             }
         }
         private void menuFullScreen_Click(object sender, RoutedEventArgs e)
@@ -182,7 +190,7 @@ namespace Simple_galery
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                System.Windows.MessageBox.Show(ex.Message);
             }
         }
 
@@ -281,6 +289,7 @@ namespace Simple_galery
             ImagePreview = null;
             list.RemoveAt(stack.Children.IndexOf(activeBorder));
             stack.Children.Remove(activeBorder);
+            panelPreview.Background = null;
             lastLoadedIndex--;
         }
 
@@ -310,18 +319,57 @@ namespace Simple_galery
         // слайд-шоу
         private void btnSlideShow_Click(object sender, RoutedEventArgs e)
         {
-            slideShow = true;
+            if (stack.Children == null)
+                return;
 
-            foreach (var item in stack.Children)
+            panelPreview.Background = null;
+
+        // анимация
+        //ObjectAnimationUsingKeyFrames objectAnimation = new()
+        //{
+        //    Duration = new Duration(TimeSpan.FromSeconds(stack.Children.Count)),
+        //};
+            objectAnimation.Duration = new Duration(TimeSpan.FromSeconds(stack.Children.Count));
+
+            objectAnimation.Completed += ObjectAnimation_Completed!;
+
+            for (int i = 0; i < stack.Children.Count; i++)
             {
-                SelectImage(item);
-                Thread.Sleep(1000);
+                Border? border = stack.Children[i] as Border;
+                Image? image = border?.Child as Image;
+
+                objectAnimation.KeyFrames.Add(new DiscreteObjectKeyFrame() 
+                {
+                  Value = image?.Source,
+                  KeyTime = KeyTime.Paced
+                });
             }
 
-            slideShow = false;
+            imgPreview.BeginAnimation(Image.SourceProperty, objectAnimation);
+            objectAnimation.FillBehavior = FillBehavior.Stop;
         }
 
-        
+        private void ObjectAnimation_Completed(object sender, EventArgs e)
+        {
+            if (activeBorder != null)
+                SelectImage(activeBorder);
+            else 
+                ImagePreview = null;
+
+            objectAnimation = new();
+        }
+
+        private void btnStop_Click(object sender, RoutedEventArgs e)
+        {
+            objectAnimation = new();
+            objectAnimation.Duration = new Duration(TimeSpan.FromSeconds(0));
+            imgPreview.BeginAnimation(Image.SourceProperty, objectAnimation);
+        }
     }
 }
+
+
+
+
+
 

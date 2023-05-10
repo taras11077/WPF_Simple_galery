@@ -8,7 +8,7 @@
         <Setter Property="Menu.Background" Value="Bisque"/>
         <Setter Property="Menu.Foreground" Value="Brown"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="BorderBrush" Value="Brown"/>
+        <Setter Property="BorderBrush" Value="DarkKhaki"/>
     </Style>
 
     <Style x:Key="ParentMenuItem" TargetType="MenuItem" >
@@ -21,7 +21,7 @@
                             <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
                                 <Border x:Name="SubmenuBorder" SnapsToDevicePixels="True" BorderThickness="1" Background="Bisque">
                                     <Border.BorderBrush>
-                                        <SolidColorBrush Color="Brown" />
+                                        <SolidColorBrush Color="DarkKhaki" />
                                     </Border.BorderBrush>
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
                                 </Border>
@@ -39,7 +39,7 @@
         <Setter Property="HorizontalAlignment" Value="Right"/>
         <Setter Property="Height" Value="40" />
         <Setter Property="Width" Value="40" />
-        <Setter Property="Margin" Value="20"/>
+        <Setter Property="Margin" Value="10,7"/>
         <Setter Property="Foreground" Value="Brown" />
 
         <Setter Property="Template">
@@ -61,7 +61,7 @@
     </Style>
 
     <Style x:Key="SplitterStyle" TargetType="GridSplitter">
-        <Setter Property="GridSplitter.Background" Value="Brown" />
+        <Setter Property="GridSplitter.Background" Value="DarkKhaki" />
     </Style>
 
     <Style x:Key="ScrollViewerStyle" TargetType="ScrollViewer">

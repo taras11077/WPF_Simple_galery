@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Simple_galery"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800"
+        Title="MainWindow" Height="540" Width="800"
         WindowStartupLocation="CenterScreen">
    
     
@@ -42,7 +42,7 @@
                     <MenuItem x:Name="menuDarkTheme" Header="Dark" Click="menuDarkTheme_Click"/>
                 </MenuItem>
 
-                <MenuItem x:Name="menuBackgroundView" Header="Image Background" Style="{DynamicResource ParentMenuItem}">
+                <MenuItem x:Name="menuBackgroundView" Header="Background" Style="{DynamicResource ParentMenuItem}">
                     <RadioButton x:Name="rbtnNone" GroupName="BackGround" Content="none" IsChecked="True" Checked="rbtnNone_Checked" />
                     <RadioButton x:Name="rbtnPreviewImage" GroupName="BackGround" Content="preview image" Checked="rbtnPreviewImage_Checked" />
                 </MenuItem>
@@ -75,10 +75,18 @@
 
             <Button x:Name="btnSlideShow" 
                     Style="{DynamicResource ButtonStyle}"
+                    Margin="10,7,10,0"
                     FontSize="18" 
                     Content="🎥"
-                    Click="btnSlideShow_Click"
-                    >
+                    Click="btnSlideShow_Click">
+            </Button>
+
+            <Button x:Name="btnStop" 
+                    Style="{DynamicResource ButtonStyle}"
+                    Margin="10,0,10,7"
+                    FontSize="14"
+                    Content ="STOP"
+                    Click="btnStop_Click">
             </Button>
 
             <Button x:Name="btnDelete" 
@@ -87,6 +95,7 @@
                     Content ="🗑"
                     Click="btnDelete_Click">
             </Button>
+           
         </StackPanel>
         
         <!--Preview panel-->
@@ -102,6 +111,7 @@
                Grid.ColumnSpan="2"   
                HorizontalAlignment="Center"  
                Source="{Binding Path=ImagePreview}"
+               
                AllowDrop="True"
                PreviewDragEnter="MainGrid_PreviewDragEnter"
                PreviewDrop="MainGrid_PreviewDrop">
