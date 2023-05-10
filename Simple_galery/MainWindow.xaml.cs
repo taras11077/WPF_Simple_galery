@@ -280,6 +280,7 @@ namespace Simple_galery
 
             ImagePreview = newFormat; 
         }
+
         // удаление изображения из списка
         private void btnDelete_Click(object sender, RoutedEventArgs e)
         {
@@ -293,7 +294,7 @@ namespace Simple_galery
             lastLoadedIndex--;
         }
 
-        // установка теми
+        // установка темы
         private void menuLightTheme_Click(object sender, RoutedEventArgs e)
         {
             SetThemes("LightTheme.xaml");
@@ -324,8 +325,7 @@ namespace Simple_galery
 
             panelPreview.Background = null;
 
-        // анимация
-       
+            // анимация
             objectAnimation.Duration = new Duration(TimeSpan.FromSeconds(stack.Children.Count));
 
             objectAnimation.Completed += ObjectAnimation_Completed!;
@@ -343,11 +343,13 @@ namespace Simple_galery
             }
 
             imgPreview.BeginAnimation(Image.SourceProperty, objectAnimation);
-            objectAnimation.FillBehavior = FillBehavior.Stop;
         }
 
+        // установка главного изображения после окончания анимации
         private void ObjectAnimation_Completed(object sender, EventArgs e)
         {
+            imgPreview.BeginAnimation(Image.SourceProperty, null);
+
             if (activeBorder != null)
                 SelectImage(activeBorder);
             else 
@@ -355,12 +357,11 @@ namespace Simple_galery
 
             objectAnimation = new();
         }
-
+        // остановка анимации
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
-            objectAnimation = new();
-            objectAnimation.Duration = new Duration(TimeSpan.FromSeconds(0));
-            imgPreview.BeginAnimation(Image.SourceProperty, objectAnimation);
+            if(objectAnimation!=null)
+                imgPreview.BeginAnimation(Image.SourceProperty, null);
         }
     }
 }

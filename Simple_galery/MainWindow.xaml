@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Simple_galery"
         mc:Ignorable="d"
-        Title="MainWindow" Height="540" Width="800"
+        Title="MainWindow" Height="530" Width="800"
         WindowStartupLocation="CenterScreen">
    
     
@@ -75,7 +75,7 @@
 
             <Button x:Name="btnSlideShow" 
                     Style="{DynamicResource ButtonStyle}"
-                    Height="35"
+                    Height="30"
                     Margin="10,7,10,0"
                     FontSize="18" 
                     Content="🎥"
@@ -84,7 +84,7 @@
 
             <Button x:Name="btnStop" 
                     Style="{DynamicResource ButtonStyle}"
-                    Height="35"
+                    Height="30"
                     Margin="10,0,10,7"
                     FontSize="18"
                     Content ="❌"
