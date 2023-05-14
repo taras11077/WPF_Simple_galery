@@ -1,8 +1,10 @@
 ﻿using FileProcessor;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -18,6 +20,7 @@ using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Image = System.Windows.Controls.Image;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Simple_galery
 {
@@ -91,25 +94,37 @@ namespace Simple_galery
         {
             for (int i = lastLoadedIndex; i < lastLoadedIndex + extraLoad && i < list.Count; i++) // загрузка заданного количества изображений с фиксацией индекса последнешо загруженного
             {
-                    Image image = new Image();
-                    image.Source = new BitmapImage(new Uri(list[i]));
-                    image.MouseWheel += ScrollViewer_MouseWheel;
+                Image image = new Image();
 
-                    Border border = new Border()
-                    {
-                        Child = image,
+                BitmapImage bitmapImage = new BitmapImage();
+                FileStream fs = File.OpenRead(list[i]);
 
-                        MinWidth = 150,
-                        BorderThickness = new Thickness(3, 3, 3, 3),
-                        Margin = new Thickness(10, 15, 10, 15),
-                    };
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = fs;
+                bitmapImage.EndInit();
+                fs.Close();
+                fs.Dispose();
 
-                    border.MouseDown += Border_MouseDown;
-                    border.MouseEnter += Border_MouseEnter;
-                    border.MouseLeave += Border_MouseLeave;
-                    border.MouseWheel += ScrollViewer_MouseWheel;
+                image.Source = bitmapImage;
 
-                    stack.Children.Add(border);
+                image.MouseWheel += ScrollViewer_MouseWheel;
+
+                Border border = new Border()
+                {
+                   Child = image,
+
+                   MinWidth = 150,
+                   BorderThickness = new Thickness(3, 3, 3, 3),
+                   Margin = new Thickness(10, 15, 10, 15),
+                };
+
+                border.MouseDown += Border_MouseDown;
+                border.MouseEnter += Border_MouseEnter;
+                border.MouseLeave += Border_MouseLeave;
+                border.MouseWheel += ScrollViewer_MouseWheel;
+
+                stack.Children.Add(border); 
             };
 
             lastLoadedIndex += extraLoad;
@@ -289,7 +304,11 @@ namespace Simple_galery
                 return;
             
             ImagePreview = null;
+
+            FileSystem.DeleteFile(list[stack.Children.IndexOf(activeBorder)], UIOption.OnlyErrorDialogs, RecycleOption.SendToRecycleBin);
+
             list.RemoveAt(stack.Children.IndexOf(activeBorder));
+
             stack.Children.Remove(activeBorder);
             panelPreview.Background = null;
             lastLoadedIndex--;
@@ -366,6 +385,48 @@ namespace Simple_galery
             if(objectAnimation!=null)
                 imgPreview.BeginAnimation(Image.SourceProperty, null);
         }
+
+
+        int count = 0;
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            if (ImagePreview == null)
+                return;
+                      
+            //поиск пути главного изображения
+            string path = list[stack.Children.IndexOf(activeBorder)];
+
+            File.Delete(path);
+
+            //генерация нового пути для измененного главного изображения
+            //GenerateNewName(path, $"{++count}");
+                      
+            //сохранение измененного главного изображения в файл по новому пути
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create((BitmapSource)ImagePreview));
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+                encoder.Save(fs);
+
+            // передача измененного главного изображения в бордер
+            (activeBorder?.Child as Image)!.Source = ImagePreview;
+
+        }
+
+        public static void GenerateNewName(string fileName, string inset)
+        {
+            //поиск индекса последней точки
+            int dotIndex = fileName.LastIndexOf('.');
+            string ext = fileName.Substring(dotIndex + 1, fileName.Length - dotIndex - 1);
+
+            //поиск индекса последнего слеша
+            int slashInd = fileName.LastIndexOf('.');
+
+            //переименование
+            File.Move(fileName, fileName.Remove(slashInd + 1) + inset + "." + ext);
+            //File.Move(fileName, fileName + inset + "." + ext);
+        }
+
+
     }
 }
 

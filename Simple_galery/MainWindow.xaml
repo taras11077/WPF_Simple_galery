@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Simple_galery"
         mc:Ignorable="d"
-        Title="MainWindow" Height="530" Width="800"
+        Title="MainWindow"
+        Height="530"
+        Width="800"
+        Style="{DynamicResource WindowStyle}"
         WindowStartupLocation="CenterScreen">
    
-    
     <Grid x:Name="MainGrid"
           Style="{DynamicResource GridStyle}"
           AllowDrop="True"
@@ -31,7 +33,7 @@
         <!--Menu-->
         <DockPanel Grid.Row="0" Grid.ColumnSpan="2">
             <Menu DockPanel.Dock="Top" Style="{DynamicResource MenuStyle}">
-                <MenuItem Header="Menu" Style="{DynamicResource ParentMenuItem}">
+                <MenuItem Header="Options" Style="{DynamicResource ParentMenuItem}">
                     <MenuItem x:Name="menuOpen" Header="Open Directory"  Click="menuOpen_Click"/>
                     <MenuItem x:Name="menuFullScreen" Header="Full Screen"  Click="menuFullScreen_Click"/>
                     <MenuItem x:Name="menuExit" Header="Exit" Click="menuExit_Click"/>
@@ -54,6 +56,7 @@
             <Button x:Name="btnRotate"  
                     Style="{DynamicResource ButtonStyle}"
                     FontSize="24"
+                    Margin="10,7,10,0"
                     Content="↺"
                     Click="btnRotate_Click">
             </Button>
@@ -61,6 +64,7 @@
             <Button x:Name="btnMirror"  
                     Style="{DynamicResource ButtonStyle}"
                     FontSize="24"
+                    Margin="10,0,10,0"
                     Content="↔"
                     Click="btnMirror_Click">
             </Button>
@@ -68,15 +72,24 @@
             <Button x:Name="btnSepia" 
                     Style="{DynamicResource ButtonStyle}"
                     FontSize="24" 
+                    Margin="10,0,10,0"
                     Content="◐"
                     Click="btnSepia_Click"
                     >
             </Button>
 
+            <Button x:Name="btnSave" 
+                    Style="{DynamicResource ButtonStyle}"
+                    FontSize="14"
+                    Margin="10,0,10,20"
+                    Content="SAVE"
+                    Click="btnSave_Click"
+                    >
+            </Button>
+
             <Button x:Name="btnSlideShow" 
                     Style="{DynamicResource ButtonStyle}"
-                    Height="30"
-                    Margin="10,7,10,0"
+                    Margin="10,10,10,0"
                     FontSize="18" 
                     Content="🎥"
                     Click="btnSlideShow_Click">
@@ -84,8 +97,7 @@
 
             <Button x:Name="btnStop" 
                     Style="{DynamicResource ButtonStyle}"
-                    Height="30"
-                    Margin="10,0,10,7"
+                    Margin="10,0,10,20"
                     FontSize="18"
                     Content ="❌"
                     Click="btnStop_Click">
