@@ -386,8 +386,7 @@ namespace Simple_galery
                 imgPreview.BeginAnimation(Image.SourceProperty, null);
         }
 
-
-        int count = 0;
+        // сохранение изменений
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (ImagePreview == null)
@@ -397,11 +396,8 @@ namespace Simple_galery
             string path = list[stack.Children.IndexOf(activeBorder)];
 
             File.Delete(path);
-
-            //генерация нового пути для измененного главного изображения
-            //GenerateNewName(path, $"{++count}");
-                      
-            //сохранение измененного главного изображения в файл по новому пути
+                     
+            //сохранение измененного главного изображения в файл
             var encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create((BitmapSource)ImagePreview));
             using (FileStream fs = new FileStream(path, FileMode.Create))
@@ -409,24 +405,7 @@ namespace Simple_galery
 
             // передача измененного главного изображения в бордер
             (activeBorder?.Child as Image)!.Source = ImagePreview;
-
         }
-
-        public static void GenerateNewName(string fileName, string inset)
-        {
-            //поиск индекса последней точки
-            int dotIndex = fileName.LastIndexOf('.');
-            string ext = fileName.Substring(dotIndex + 1, fileName.Length - dotIndex - 1);
-
-            //поиск индекса последнего слеша
-            int slashInd = fileName.LastIndexOf('.');
-
-            //переименование
-            File.Move(fileName, fileName.Remove(slashInd + 1) + inset + "." + ext);
-            //File.Move(fileName, fileName + inset + "." + ext);
-        }
-
-
     }
 }
 
