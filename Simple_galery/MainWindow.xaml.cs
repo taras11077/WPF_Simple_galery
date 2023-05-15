@@ -16,11 +16,24 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using static System.Net.Mime.MediaTypeNames;
 using Application = System.Windows.Application;
 using DataFormats = System.Windows.DataFormats;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Image = System.Windows.Controls.Image;
 using MessageBox = System.Windows.MessageBox;
+
+
+// ========Приложение Галерея.===========
+//
+// Переключаемые темы Главного окна и Окна полноэкранного режима.
+// Переключаемый фон Главного окна просмотра.
+// Порционная загрузка. Количество разово загружаемых фото определяется переменной "extraLoad". Догрузка автоматическая, по мере просмотра.
+// Обработка изображений: поворот на 90 градусов, зеркальное отражение, черно-белое изображение.
+// Сохранение изменений и возврат к первоначальному состоянию.
+// Слайд-шоу.
+// Перемещение файла изображения из файловой системы в корзину.
+
 
 namespace Simple_galery
 {
@@ -36,6 +49,7 @@ namespace Simple_galery
         private int lastLoadedIndex = 0;
         private int extraLoad = 5;
         private string mainWindowTheme = string.Empty;
+        private string pathOriginals = string.Empty;
 
         private ObjectAnimationUsingKeyFrames objectAnimation = new();
             
@@ -147,7 +161,7 @@ namespace Simple_galery
                 if ((bool)rbtnPreviewImage.IsChecked!) // установка SelectImage фоном главного изображения
                     panelPreview.Background = new ImageBrush(ImagePreview);
 
-                if (stack.Children.IndexOf(activeBorder) == lastLoadedIndex-1) // запуск подгрузки, если SelectImage достигло последнего загруженного фото
+                if (stack.Children.IndexOf(activeBorder) >= lastLoadedIndex-1) // запуск подгрузки, если SelectImage достигло последнего загруженного фото
                     UpdateStack(); 
         }
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
@@ -166,6 +180,10 @@ namespace Simple_galery
             FullScreenWindow fsWin = new FullScreenWindow(list, stack.Children.IndexOf(activeBorder), mainWindowTheme);
             fsWin.ShowDialog();
 
+            // подгрузка стека до соответствия индекса стека значению Id Фуллскрина 
+            while(fsWin.Id >= lastLoadedIndex - 1)
+                UpdateStack();
+            
             SelectImage(stack.Children[fsWin.Id]);
         }
         private void menuExit_Click(object sender, RoutedEventArgs e)
@@ -215,6 +233,7 @@ namespace Simple_galery
         {
             if (e.Delta > 0)
                 scrollViewer.LineRight();
+
             else if (e.Delta < 0)
                 scrollViewer.LineLeft();
 
@@ -391,20 +410,115 @@ namespace Simple_galery
         {
             if (ImagePreview == null)
                 return;
-                      
-            //поиск пути главного изображения
-            string path = list[stack.Children.IndexOf(activeBorder)];
 
-            File.Delete(path);
-                     
-            //сохранение измененного главного изображения в файл
-            var encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create((BitmapSource)ImagePreview));
+            //поиск пути изображения, отображаемого на главном екране
+            string path = list[stack.Children.IndexOf(activeBorder)];
+                        
+            // создание папки для хранения оригиналов изображений
+            pathOriginals = CreateDirectory(path);
+
+            // указание пути для файла оригинала изображения
+            string newFileName = GenerateNewName(path, pathOriginals);
+
+            // сохранение оригинального изображения в файл в отдельную папку (резервний файл для отката изменений)
+            if (newFileName !=string.Empty & !File.Exists(newFileName))
+            {
+                var encoderOriginal = new PngBitmapEncoder();
+                encoderOriginal.Frames.Add(BitmapFrame.Create((activeBorder?.Child as Image)?.Source as BitmapImage));
+                using (FileStream fs = new FileStream(newFileName, FileMode.Create))
+                    encoderOriginal.Save(fs);
+            }
+         
+            //сохранение измененного главного изображения в файл по старому пути (сохранение изменений)
+            var encoderModified = new PngBitmapEncoder();
+            encoderModified.Frames.Add(BitmapFrame.Create((BitmapSource)ImagePreview));
             using (FileStream fs = new FileStream(path, FileMode.Create))
-                encoder.Save(fs);
+                encoderModified.Save(fs);
 
             // передача измененного главного изображения в бордер
             (activeBorder?.Child as Image)!.Source = ImagePreview;
+        }
+
+        private string CreateDirectory(string path)
+        {
+            if (path == null)
+                return string.Empty;
+
+            try
+            {
+                FileInfo fileInfo = new FileInfo(path);
+                string? dirPath = fileInfo.DirectoryName;
+
+                DirectoryInfo dir = new DirectoryInfo(dirPath!);
+                dir.CreateSubdirectory(@"Originals");
+
+                return Path.Combine(dir.FullName, @"Originals");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return string.Empty;
+            }
+        }
+        private string GenerateNewName(string fileName, string dirName)
+        {
+            //поиск индекса последней точки
+            int dotIndex = fileName.LastIndexOf('.');
+            int slashIndex = fileName.LastIndexOf('\\');
+            string ext = fileName.Substring(dotIndex + 1, fileName.Length - dotIndex - 1);
+
+            // формирование нового пути (добавление к имени файла (original))
+            string temp1 = fileName.Remove(dotIndex + 1) + "(original)" + "." + ext;
+            string temp2 = temp1.Remove(0, slashIndex);
+            string newFileName = temp2.Insert(0, dirName);
+
+            return newFileName;
+        } 
+
+        private void btnUndo_Click(object sender, RoutedEventArgs e)
+        {
+            if(activeBorder == null )
+                  return;
+           
+            string path = list[stack.Children.IndexOf(activeBorder)];   // путь текущей версии изображения
+            string originalFile = GenerateNewName(path, pathOriginals); // путь оригинальной версии изображения  
+
+            try
+            {
+                // удаление текущего изображения сохраненного по старому пути
+                if (File.Exists(path) & File.Exists(originalFile))
+                    File.Delete(path);
+                else
+                    return;
+
+                // перезапись оригинального изображения по старому пути
+                if (File.Exists(originalFile) & !File.Exists(path))
+                {
+                    File.Move(originalFile, path);
+                    File.Delete(originalFile);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
+
+            // загрузка оригинального изображения в активний бордер и главное окно
+            Image image = new Image();
+            BitmapImage bitmapImage = new BitmapImage();
+            FileStream fs = File.OpenRead(path);
+
+            bitmapImage.BeginInit();
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.StreamSource = fs;
+            bitmapImage.EndInit();
+            fs.Close();
+            fs.Dispose();
+
+            image.Source = bitmapImage;
+            
+            activeBorder.Child = image;
+            ImagePreview = image.Source;
         }
     }
 }

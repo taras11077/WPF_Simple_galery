@@ -82,7 +82,6 @@ namespace Simple_galery
             }
         }
 
-
         private void SetThemes(string dictionary)
         {
             Uri uri = new Uri(dictionary, UriKind.Relative);

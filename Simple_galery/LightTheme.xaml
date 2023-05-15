@@ -2,12 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style x:Key="WindowStyle" TargetType="Window">
-        <Setter Property="BorderThickness" Value="5"/>
-        <Setter Property="BorderBrush" Value="Bisque"/>
+        <Setter Property="BorderThickness" Value="3"/>
+        <Setter Property="BorderBrush" Value="SandyBrown"/>
     </Style>
 
     <Style x:Key="GridStyle" TargetType="Grid">
-        <Setter Property="Grid.Background" Value="White"/>
+        <Setter Property="Grid.Background" Value="AntiqueWhite"/>
     </Style>
 
     <Style x:Key="MenuStyle" TargetType="Menu">
@@ -67,7 +67,7 @@
     </Style>
 
     <Style x:Key="SplitterStyle" TargetType="GridSplitter">
-        <Setter Property="GridSplitter.Background" Value="Peru" />
+        <Setter Property="GridSplitter.Background" Value="SandyBrown" />
     </Style>
 
     <Style x:Key="ScrollViewerStyle" TargetType="ScrollViewer">
