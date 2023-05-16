@@ -81,18 +81,18 @@
 
             <Button x:Name="btnSave" 
                     Style="{DynamicResource ButtonStyle}"
-                    FontSize="20"
+                    FontSize="12"
                     Margin="10,0,10,0"
-                    Content="📥"
+                    Content="SAVE"
                     Click="btnSave_Click"
                     >
             </Button>
 
             <Button x:Name="btnUndo" 
                     Style="{DynamicResource ButtonStyle}"
-                    FontSize="28"
+                    FontSize="10"
                     Margin="10,0,10,30"
-                    Content="↻"
+                    Content="UNDO"
                     Click="btnUndo_Click"
                     >
             </Button>
