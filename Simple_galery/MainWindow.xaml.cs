@@ -330,6 +330,7 @@ namespace Simple_galery
 
             stack.Children.Remove(activeBorder);
             panelPreview.Background = null;
+            activeBorder = null;
             lastLoadedIndex--;
         }
 
